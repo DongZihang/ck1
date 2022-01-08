@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.testa_dongzihang.mapper.TestMapper">
+  <resultMap id="BaseResultMap" type="com.testa_dongzihang.entity.Tests">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="uname" jdbcType="VARCHAR" property="uname" />
+    <result column="pwd" jdbcType="VARCHAR" property="pwd" />
+    <result column="age" jdbcType="INTEGER" property="age" />
+    <result column="birthday" jdbcType="DATE" property="birthday" />
+    <result column="uaccount" jdbcType="VARCHAR" property="uaccount" />
+  </resultMap>
+  <select id="getAll" resultType="com.testa_dongzihang.entity.Tests">
+     SELECT * FROM chebiao c LEFT JOIN changshang s ON c.sid = s.sid
+  </select>
+  <select id="getJias" resultType="com.testa_dongzihang.entity.Tests" parameterType="com.testa_dongzihang.entity.Tests">
+
+SELECT * FROM chebiao c LEFT JOIN jiashi j ON c.jid = j.jid where cid =  #{cid}
+  </select>
+  <select id="getJs" resultType="com.testa_dongzihang.entity.Tests">
+     SELECT * FROM jiashi
+  </select>
+  <select id="getCs" resultType="com.testa_dongzihang.entity.Tests">
+     SELECT * FROM changshang
+  </select>
+  <insert id="tianjia" parameterType="com.testa_dongzihang.entity.Tests">
+    insert into chebiao(cname,cdate,sid,jid,chezhu)
+     values( #{cname}, #{cdate}, #{sid}, #{jid}, #{chezhu});
+  </insert>
+</mapper>

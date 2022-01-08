@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../static/js/vuejs/vuejs-2.5.16.js"></script>
+    <script src="../static/js/vuejs/axios-0.18.0.js"></script>
+</head>
+<body>
+    <div id="indexdiv">
+        <center>
+            <h1>车辆信息列表</h1>
+            <button @click="tianjia()">添加车辆信息</button><br>
+        </center>
+        <div id="list">
+            <center>
+                <table border="1">
+                    <tr>
+                        <td>车辆编号</td>
+                        <td>车辆名称</td>
+                        <td>出厂日期</td>
+                        <td>厂商Id</td>
+                        <td>厂商名称</td>
+                        <td>厂商地址</td>
+                        <td>操作</td>
+                    </tr>
+                    <tr v-for="o in list">
+                        <td>{{o.cid}}</td>
+                        <td>{{o.cname}}</td>
+                        <td>{{o.cdate}}</td>
+                        <td>{{o.sid}}</td>
+                        <td>{{o.sname}}</td>
+                        <td>{{o.saddress}}</td>
+                        <td> <button @click="chakan(o.cid)">查看驾驶人</button><br></td>
+                    </tr>
+                </table>
+            </center>
+        </div>
+        <div style="display: none" id="mdiv">
+            <center>
+                <table border="1">
+                    <tr>
+                        <td>驾驶员id</td>
+                        <td>驾驶员名称</td>
+                        <td>驾驶员性别</td>
+                        <td>出生日期</td>
+                    </tr>
+                    <tr v-for="m in mlist">
+                        <td>{{m.jid}}</td>
+                        <td>{{m.jname}}</td>
+                        <td>{{m.jsex}}</td>
+                        <td>{{m.jdate}}</td>
+                    </tr>
+                    <tr>
+
+                        <td colspan="10">
+                            <center>
+                            <button @click="close()">关闭</button>
+                            </center>
+                        </td>
+
+                    </tr>
+                </table>
+            </center>
+        </div>
+        <div style="display: none" id="jdiv">
+            <center>
+                <table border="1">7
+                    <tr>
+                        <td>车辆名称</td>
+                        <td><input type="text" v-model="car.cname"></td>
+                    </tr>
+                    <tr>
+                        <td>出厂日期</td>
+                        <td><input type="date" v-model="car.cdate"></td>
+                    </tr>
+                    <tr>
+                        <td>车辆厂商</td>
+                        <td><select id="changshang" v-model="car.sid">
+                            <option  v-for="o in slist" :value="o.sid">{{o.sname}}</option>
+                        </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>车辆驾驶员</td>
+                        <td>
+                            <select id="selec" v-model="car.jid">
+                                <option  v-for="o in jlist" :value="o.jid">{{o.jname}}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>车主</td>
+                        <td>
+                            <select id="sele" v-model="car.chezhu">
+                                <option  v-for="o in jlist" :value="o.jid">{{o.jname}}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="10">
+                            <center>
+                                <button @click="tijiao()">确认</button>
+                                <button @click="close2()">关闭</button>
+                            </center>
+                        </td>
+
+                    </tr>
+                </table>
+            </center>
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript">
+    var vm = new Vue({
+        el:'#indexdiv',
+        data:{
+            list:[],
+            jlist:[],
+            mlist:[],
+            slist:[],
+            car: {},
+        },
+        methods:{
+            findAll:function () {
+                var _this =  this;
+                axios.post('testcontroller/getAll').then(function (response) {
+                    _this.list = response.data;
+                })
+            },
+            chakan:function (cid) {
+                var _this =  this;
+                axios.post('testcontroller/getJias?cid='+cid).then(function (response) {
+                    _this.mlist = response.data;
+                    document.getElementById("mdiv").style.display="block";
+                })
+            },
+            close:function () {
+                document.getElementById("mdiv").style.display="none";
+            },
+            tianjia:function () {
+                var _this =  this;
+                axios.post('testcontroller/getJs').then(function (response) {
+                    _this.jlist = response.data.jlist;
+                    _this.slist = response.data.slist;
+                    document.getElementById("jdiv").style.display="block";
+                })
+            },
+            close2:function () {
+                document.getElementById("jdiv").style.display="none";
+            },
+            tijiao:function () {
+                var _this = this;
+                axios.post("testcontroller/tianjia", _this.car).then(function (result) {
+                    if(result.data == "ok") {
+                        location.reload();
+                    }else {
+                        alert("失败")
+                    }
+                })
+            }
+        },
+        created:function () {
+            this.findAll();
+        }
+    });
+
+</script>
+</html>
